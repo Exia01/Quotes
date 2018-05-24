@@ -1,0 +1,140 @@
+<html>
+<head>
+    <title>Quotes Dashboard</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'xapp/css/dashboard.css' %}" />
+    <style>
+        .title{
+            width: 50%
+        }
+        table.table.table-striped {
+            width: 75%;
+        }
+        .btn-block {
+            display: block;
+            width: 25%;
+        }
+        a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        a:hover 
+        {
+             color:rgb(228, 157, 145); 
+             text-decoration:none; 
+             cursor:pointer;  
+        }
+        mores{
+            color:rgb(250, 250, 250); 
+            text-decoration:none; 
+            cursor:pointer;  
+        }
+        .links{
+            color: rgb(75, 129, 199)
+        }
+        .borders{
+            border: .5px, lightgrey;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="navbar navbar-dark bg-dark box-shadow">
+            <div class="container d-flex justify-content-between">
+            </div>
+        </div>
+    </header>
+
+    <main role="main">
+        <section class="jumbotron">
+            <div class="container">
+                <button type="button" class="btn btn-danger">
+                            <a href="/logout">Logout</a>
+                    </button>
+                <br>
+                <br>
+                <h2 class="jumbotron-heading">Hello, {{request.session.name}}!</h2>
+                <br>
+                <h5 class="jumbotron-heading">Favored Quotes</h5>
+                    <table class="table borders table-striped">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Quote</th>
+                                    <th>By</th>
+                                    <th>Dont like it?</th>
+                                </tr>
+                            </thead>
+                        <tbody>
+                            {% for info in myquotes %}
+                                <tr>
+                                    <td>{{info.message}}<h6>{{info.author}}</h6></td>
+                                    <td>
+                                        <a class="links" href="/showposter/{{info.poster.id}}">{{info.poster.name}}</a>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-success">
+                                            <a class="mores" href="/remove/{{info.id}}">Remove</a>
+                                        </button>
+                                    </td> 
+                                 </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+            </div>
+        </section>
+            <div class="album py-5 bg-light">
+                <div class="container">
+                    <h4 class="mb-3" id='buy'>Quotable quotes</h4>
+                    <table class="table table-striped">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Quote</th>
+                                <th>By</th>
+                                <th>Like it?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for those in quotes %}
+                            <tr>
+                                <td>{{those.message}}<h6>{{those.author}}</h6></td>
+                                <td>
+                                    <a class="links" href="/showposter/{{those.poster_id}}">{{those.poster.name}}</a>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-success">
+                                        <a class="mores" href="/addtowish/{{those.id}}">Add to wishlist</a>
+                                    </button>
+                                </td> 
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="container">
+                    <div class="album py-5 bg-light">
+                        <div class="form-group"> 
+                        <h5 class="mb-3" id='info'>Perhaps add a quote?</h5>
+                        <form class="" action="/addquote" method="POST">
+                                {% csrf_token %}  
+                                {% if messages %}
+                                        {% for message in messages %}
+                                            {% if "quoterror" in message.tags %}
+                                                <p{% if message.tags %} class=" warning text-center {{ message.tags }}"{% endif %}>{{ message }}</p>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                            Quoted by:
+                            <input class="form-control form-control-sm" type="text" name="author" placeholder="Author">
+                            <br>
+                               Message: <textarea class="form-control" rows="3" name="message"></textarea>
+                                <br>
+                                <button class="btn btn-info btn-sm btn-block" type="submit">Submit</button>
+                        </form> 
+                        </div>
+                    </div>
+            </div>
+    </main>
+      
+</body>
+</html>
